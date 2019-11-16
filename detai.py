@@ -43,7 +43,6 @@ def handleFile(fileName,skew = False,deblur=False,handleTableBasic=True,handleTa
         img = cv2.resize(img, (mask_img.shape[1], mask_img.shape[0]))
         # origin = img.copy()
         resultTable = GetText(listResult,listBigBox,img)
-        resultTable = ""
         # resultTable= ScanText(listResult,listBigBox,img)
     # resultNotTable = pytesseract.image_to_string(img,lang="vie")
     return resultTable

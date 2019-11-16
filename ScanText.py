@@ -1,5 +1,8 @@
 import pytesseract
 from handleTable import IOU,printImage
+import cv2
+import imutils
+
 def GetText(listResult,listBigBox,img):
     result = []
     if len(listBigBox)==0:
@@ -20,7 +23,7 @@ def GetText(listResult,listBigBox,img):
         y2 = listYCoord[index+1]
         if (y1,y2) not in bigBoxTemp:
             crop = img[y1:y2,:]
-            result.append(pytesseract.image_to_string(crop,lang='vie'))
+            result.append(pytesseract.image_to_string(crop,lang='vie')+"\n")
         else:
             index = 0
             box = listBigBox.pop(0)
@@ -29,6 +32,23 @@ def GetText(listResult,listBigBox,img):
                     index = index +1
                     for (x,y,w,h) in temp:
                         crop = img[y:y+h,x:x+w]
+                        size = 100
+                        crop = imutils.resize(crop,height=size) ## 
+                        crop = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+                        string  = pytesseract.image_to_string(crop,lang='vie')
+                        if len(string) == 0:
+                            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+                            crop = cv2.erode(crop, kernel, iterations=1)
+                            while size<=200:
+                                string  = pytesseract.image_to_string(crop,lang='eng',config='--psm 10')
+                                if "l" in string and len(string)<3:
+                                    string = "1"
+                                if string.isdigit() or (len(string)>=2 and "," not in string and "'" not in string):
+                                    break
+                                size = size + 10
+                                crop = imutils.resize(crop,height=size)
+                        string = string + " "
+                    result.append(string+"\n")
                 else:
                     break
             listResult = listResult[index:]
