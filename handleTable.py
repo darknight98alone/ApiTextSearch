@@ -94,14 +94,13 @@ def getTableCoordinate(image):
         listResult[index] = sorted(listResult[index], key=lambda x: x[0])
     listResult = sorted(listResult,key=lambda x: x[0][1])
     listBigBox = sorted(listBigBox,key=lambda x: x[1])
-    for temp in listResult:
-        for (x,y,w,h) in temp:
-            cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
-            printImage(newimage)
-    for (x,y,w,h) in listBigBox:
-        cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
-    printImage(newimage)
-    ## phuong phap xu li tam thoi
+    # for temp in listResult:
+    #     for (x,y,w,h) in temp:
+    #         cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
+    #         printImage(newimage)
+    # for (x,y,w,h) in listBigBox:
+    #     cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
+    # printImage(newimage)
     return listResult, listBigBox
 
 def compare_table(item1, item2):
