@@ -48,9 +48,9 @@ def GetText(listResult,listBigBox,img):
                                 size = size + 10
                                 crop = imutils.resize(crop,height=size)
                         string = string + " "
-                    result.append(string+"\n")
+                        result.append(string)
+                    result.append("\n")
                 else:
                     break
             listResult = listResult[index:]
-        printImage(crop)
     return result
