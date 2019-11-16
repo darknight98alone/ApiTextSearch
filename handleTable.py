@@ -26,6 +26,18 @@ def getInput():
     args = vars(ap.parse_args())
     return args["inputFile"]
 
+def IOU(oldbox,newbox):
+    (x1,y1,w1,h1) = oldbox
+    (x2,y2,w2,h2) = newbox
+    cx1 = x1 + w1/2
+    cx2 = x2 + w2/2
+    cy1 = y1 + h1/2
+    cy2 = y2 + h2/2
+    if cx1 >= x2 and cx1 <= x2+w2 and cy1>= y2 and cy1<= y2+h2:
+        return True
+    if cx2 >= x1 and cx2 <= x1+w1 and cy2>= y1 and cy2<= y1+h1:
+        return True
+    return False
 
 def getTableCoordinate(image):
     """
