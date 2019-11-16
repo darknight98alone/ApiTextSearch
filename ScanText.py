@@ -41,7 +41,7 @@ def GetText(listResult,listBigBox,img):
                             crop = cv2.erode(crop, kernel, iterations=1)
                             while size<=200:
                                 string  = pytesseract.image_to_string(crop,lang='eng',config='--psm 10')
-                                if "l" in string and len(string)<3:
+                                if ("l" in string or "I" in string ) and len(string)<3:
                                     string = "1"
                                 if string.isdigit() or (len(string)>=2 and "," not in string and "'" not in string):
                                     break
