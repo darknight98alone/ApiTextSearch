@@ -34,17 +34,13 @@ def handleFile(fileName,skew = False,deblur=False,handleTableBasic=True,handleTa
             mask = detectTable(img).run(1)
         else:
             mask = detectTable(img).run(2)
-        # maskName = "mask.jpg"
-        # mask_img = cv2.imread(maskName)
         mask_img = mask
         print(mask.shape)
         ## resize
         listResult, listBigBox = getTableCoordinate(mask_img)
+        # resize image ?
         img = cv2.resize(img, (mask_img.shape[1], mask_img.shape[0]))
-        # origin = img.copy()
         resultTable = GetText(listResult,listBigBox,img)
-        # resultTable= ScanText(listResult,listBigBox,img)
-    # resultNotTable = pytesseract.image_to_string(img,lang="vie")
     return resultTable
 
 def saveResult(folder,saveFileName,result):

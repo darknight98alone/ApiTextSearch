@@ -3,15 +3,16 @@ from handleTable import IOU,printImage
 import cv2
 import imutils
 
+
 def GetText(listResult,listBigBox,img):
     result = []
+    (height,_) = img.shape[:2]
     if len(listBigBox)==0:
-        result.append(pytesseract.image_to_string(img,lang='vie'))
+        result.append(pytesseract.image_to_string(img,lang='vie')+"\n")
         return result
     bigBoxTemp = []
     listYCoord = []
     listYCoord.append(0)
-    (height,_) = img.shape[:2]
     for (_,y,_,h) in listBigBox:
         bigBoxTemp.append((y,y+h))
         listYCoord.append(y)
@@ -32,7 +33,9 @@ def GetText(listResult,listBigBox,img):
                     index = index +1
                     for (x,y,w,h) in temp:
                         crop = img[y:y+h,x:x+w]
-                        size = 100
+                        size = int(crop.shape[0]*1.5)
+                        if size < 100:
+                            size = 100
                         crop = imutils.resize(crop,height=size) ## 
                         crop = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
                         string  = pytesseract.image_to_string(crop,lang='vie')
@@ -49,6 +52,8 @@ def GetText(listResult,listBigBox,img):
                                 crop = imutils.resize(crop,height=size)
                         string = string + " "
                         result.append(string)
+                        print(string)
+                        printImage(crop)
                     result.append("\n")
                 else:
                     break
