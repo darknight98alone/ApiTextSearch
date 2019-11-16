@@ -58,9 +58,7 @@ def getTableCoordinate(image):
         (conts, _) = cv2.findContours(canImage.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     elif imutils.is_cv3():
         (_, conts, _) = cv2.findContours(canImage.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    listBigBoxPoint = []
     listBigBox = []
-    listPoint = []
     listResult = []
     if len(conts) > 0:
         conts = contours.sort_contours(conts)[0]
@@ -68,16 +66,27 @@ def getTableCoordinate(image):
         for i in range(len(conts)):
             (x, y, w, h) = cv2.boundingRect(conts[i])
             if w > 10 and h > 10 and w < 0.7 * w1:
-                if (x, y) not in listPoint:
-                    for j in range(-5, 5, 1):
-                        listPoint.append((x + j, y + j))
-                    listResult.append((x, y, w, h))
+                skip = False
+                for temp in listResult:
+                    for box in temp:
+                        if IOU(box,(x,y,w,h)):
+                            skip = True
+                            break
+                if skip == False:
+                    for index,temp in enumerate(listResult):
+                        if abs(temp[0][0]-x) <= 5:
+                            listResult[index].append((x,y,w,h))
                     cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
                     # printImage(newimage)
             if w > 10 and h > 10 and w > 0.7 * w1:
-                if (x, y) not in listBigBoxPoint:
-                    listBigBox.append((x, y, w, h))
-                    listBigBoxPoint.append((x, y))
+                skip = False
+                for box in listBigBox:
+                    if IOU((x,y,w,h),box):
+                        skip = True
+                        break
+                if skip == False:
+                    listBigBox.append(box)
+    
     ## phuong phap xu li tam thoi
     return listResult, listBigBox
 
