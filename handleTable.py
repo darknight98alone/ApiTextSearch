@@ -69,32 +69,6 @@ def getTableCoordinate(image):
     ## phuong phap xu li tam thoi
     return listResult, listBigBox
 
-
-def appendListBigBox(listBigBox, img, listResult):
-    result = []
-    if len(listBigBox) > 0:
-        if len(listBigBox) == 1:
-            listBigBox = []
-        else:
-            listBigBox = listBigBox[1:]
-    number_of_bbox = 1
-    for pt in listResult:
-        (x, y, w, h) = pt
-        if len(listBigBox) > 0:
-            if y > listBigBox[0][1]:
-                break
-        tempImage = img[y:(y + h - 1), x:(x + w - 1)]
-        (h, w, d) = tempImage.shape
-        tempImage = imutils.resize(tempImage, height=h * 2)
-        # #printImagetempImage)
-        cv2.imwrite("temp.jpg", tempImage)
-        result.append((pytesseract.image_to_string(Image.open('temp.jpg'), lang='vie')
-                       , x, y, w, h, number_of_bbox))
-        number_of_bbox += 1
-        # print(result[len(result)-1])
-    return result, listBigBox
-
-
 def compare_table(item1, item2):
     # return (item1[2]-item2[2])/10
     if (item1[2] - item2[2]) // 10 > 0:  # return 1 means swap
