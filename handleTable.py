@@ -73,10 +73,13 @@ def getTableCoordinate(image):
                             skip = True
                             break
                 if skip == False:
+                    over = False
                     for index,temp in enumerate(listResult):
-                        if abs(temp[0][0]-x) <= 5:
+                        if abs(temp[0][1]-y) <= 5:
                             listResult[index].append((x,y,w,h))
-                    cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
+                            over = True
+                    if over == False:
+                        listResult.append([(x,y,w,h)])
                     # printImage(newimage)
             if w > 10 and h > 10 and w > 0.7 * w1:
                 skip = False
@@ -85,8 +88,19 @@ def getTableCoordinate(image):
                         skip = True
                         break
                 if skip == False:
-                    listBigBox.append(box)
-    
+                    listBigBox.append((x,y,w,h))
+    ## sort
+    for index,_ in enumerate(listResult):
+        listResult[index] = sorted(listResult[index], key=lambda x: x[0])
+    listResult = sorted(listResult,key=lambda x: x[0][1])
+    listBigBox = sorted(listBigBox,key=lambda x: x[1])
+    for temp in listResult:
+        for (x,y,w,h) in temp:
+            cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
+            printImage(newimage)
+    for (x,y,w,h) in listBigBox:
+        cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
+    printImage(newimage)
     ## phuong phap xu li tam thoi
     return listResult, listBigBox
 

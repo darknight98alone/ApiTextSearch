@@ -6,7 +6,7 @@ from imutils import contours
 from pdf2image import convert_from_path
 from skew import skewImage
 from DetectTable import detectTable
-from handleTable import getTableCoordinate,retreiveTextFromTable,getInput,ScanText
+from handleTable import getTableCoordinate,retreiveTextFromTable,getInput
 import os
 import imutils
 import cv2
@@ -41,7 +41,8 @@ def handleFile(fileName,skew = False,deblur=False,handleTableBasic=True,handleTa
         listResult, listBigBox = getTableCoordinate(mask_img)
         img = cv2.resize(img, (mask_img.shape[1], mask_img.shape[0]))
         # origin = img.copy()
-        resultTable= ScanText(listResult,listBigBox,img)
+        resultTable = ""
+        # resultTable= ScanText(listResult,listBigBox,img)
     # resultNotTable = pytesseract.image_to_string(img,lang="vie")
     return resultTable
 
