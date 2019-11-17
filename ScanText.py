@@ -56,7 +56,7 @@ def GetText(listResult,listBigBox,img):
                                 size = size + 10
                                 crop = imutils.resize(crop,height=size)
                         string = string + " "
-                        string = string.replace("\n")
+                        string = string.replace("\n"," ")
                         result.append(string)
                     result.append("\n")
                 else:
