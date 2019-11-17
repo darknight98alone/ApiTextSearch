@@ -1,5 +1,5 @@
 # Hướng dẫn chạy phần lõi detai.py
-[x] H
+- [x] H
 # ApiNckh
 - API gửi tới server để server cấp id cho có dạng:  
 > localhost:8080/putOptions  
