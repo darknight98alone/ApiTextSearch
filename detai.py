@@ -123,7 +123,7 @@ if __name__ == '__main__':
     # fileType = "pdf"## pdf, docx, jpg, txt
     # folderContainsFile = "./save/"
     # fileTextToSave = "text.txt"
-    # fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance = getInput()
-    # preprocessFile(fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance)
-    preprocessFile("pdf","./test","text.txt","false","false","true","false")
+    fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance = getInput()
+    preprocessFile(fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance)
+    # preprocessFile("pdf","./test","text.txt","false","false","true","false")
 
