@@ -24,6 +24,10 @@ def GetText(listResult,listBigBox,img):
         y2 = listYCoord[index+1]
         if (y1,y2) not in bigBoxTemp:
             crop = img[y1:y2,:]
+            idx = (crop.flatten()<5)
+            temp = sum(idx[:])
+            if temp <2:
+                continue
             result.append(pytesseract.image_to_string(crop,lang='vie')+"\n")
         else:
             index = 0

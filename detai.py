@@ -35,14 +35,13 @@ def handleFile(fileName,skew = False,deblur=False,handleTableBasic=True,handleTa
         else:
             mask = detectTable(img).run(2)
         mask_img = mask
-        print(mask.shape)
         ## resize
         listResult, listBigBox = getTableCoordinate(mask_img)
         # resize image ?
         img = cv2.resize(img, (mask_img.shape[1], mask_img.shape[0]))
         resultTable = GetText(listResult,listBigBox,img)
     return resultTable
-
+import datetime
 def saveResult(folder,saveFileName,result):
     file  = os.path.join(folder,saveFileName)
     if os.path.exists(file):
@@ -51,6 +50,7 @@ def saveResult(folder,saveFileName,result):
         f = open(file,"w+")
     f.write(result)
     f.close()
+    print(str(datetime.datetime.now()) + " Scan successed")
 
 def getFileName(fileType,folder):
     names = []
@@ -123,6 +123,7 @@ if __name__ == '__main__':
     # fileType = "pdf"## pdf, docx, jpg, txt
     # folderContainsFile = "./save/"
     # fileTextToSave = "text.txt"
-    #fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance = getInput()
-    #preprocessFile(fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance)
+    # fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance = getInput()
+    # preprocessFile(fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance)
     preprocessFile("pdf","./test","text.txt","false","false","true","false")
+
