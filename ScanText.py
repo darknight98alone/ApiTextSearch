@@ -41,7 +41,6 @@ def GetText(listResult,listBigBox,img):
                         idx = (crop.flatten()<5)
                         temp = sum(idx[:])
                         if temp <2:
-                            # printImage(crop)
                             continue
                         string  = pytesseract.image_to_string(crop,lang='vie')
                         if len(string) == 0:
