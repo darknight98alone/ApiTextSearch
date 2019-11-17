@@ -38,6 +38,11 @@ def GetText(listResult,listBigBox,img):
                             size = 100
                         crop = imutils.resize(crop,height=size) ## 
                         crop = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+                        idx = (crop.flatten()<5)
+                        temp = sum(idx[:])
+                        if temp <2:
+                            # printImage(crop)
+                            continue
                         string  = pytesseract.image_to_string(crop,lang='vie')
                         if len(string) == 0:
                             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
@@ -51,9 +56,8 @@ def GetText(listResult,listBigBox,img):
                                 size = size + 10
                                 crop = imutils.resize(crop,height=size)
                         string = string + " "
+                        string = string.replace("\n")
                         result.append(string)
-                        print(string)
-                        printImage(crop)
                     result.append("\n")
                 else:
                     break

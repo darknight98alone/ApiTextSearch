@@ -7,6 +7,7 @@ import imutils
 from pdf2image import convert_from_path
 import cv2
 import numpy as np
+import time
 
 # get image coordinate
 def get_boxes_coordinate(image):
@@ -14,9 +15,10 @@ def get_boxes_coordinate(image):
 
 def printImage(image):
     cv2.imshow("my image", image)
-    cv2.waitKey(0)
+    key = cv2.waitKey(0)
+    if (key == ord('s')):
+        cv2.imwrite(str(int(time.time()))+".jpg",image)
     cv2.destroyAllWindows()
-
 
 def getInput():
     ap = argparse.ArgumentParser()
@@ -94,12 +96,12 @@ def getTableCoordinate(image):
         listResult[index] = sorted(listResult[index], key=lambda x: x[0])
     listResult = sorted(listResult,key=lambda x: x[0][1])
     listBigBox = sorted(listBigBox,key=lambda x: x[1])
-    for temp in listResult:
-        for (x,y,w,h) in temp:
-            cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
-    for (x,y,w,h) in listBigBox:
-        cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
-    printImage(newimage)
+    # for temp in listResult:
+    #     for (x,y,w,h) in temp:
+    #         cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
+    # for (x,y,w,h) in listBigBox:
+    #     cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
+    # printImage(newimage)
     return listResult, listBigBox
 
 def compare_table(item1, item2):
