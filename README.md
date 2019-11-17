@@ -1,5 +1,5 @@
 # Hướng dẫn chạy phần lõi detai.py
-- Hàm main nằm tr
+- Hàm main nằm trong detai.py
 # ApiNckh
 - API gửi tới server để server cấp id cho có dạng:  
 > localhost:8080/putOptions  
