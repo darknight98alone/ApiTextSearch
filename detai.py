@@ -1,3 +1,5 @@
+import gi
+gi.require_version('Gtk', '2.0')
 import argparse
 import pytesseract
 from PIL import Image
@@ -7,12 +9,13 @@ from pdf2image import convert_from_path
 from skew import skewImage
 from DetectTable import detectTable
 from handleTable import getTableCoordinate,retreiveTextFromTable,getInput
-from ScanText import GetText
+from ScanText import GetText,GetTextLayout
 import os
 import imutils
 import cv2
 from docx import Document
 from PdfToImages import pdfToImage
+
 
 def handleFile(fileName,skew = False,deblur=False,handleTableBasic=True,handleTableAdvance=False):
     """
@@ -39,8 +42,10 @@ def handleFile(fileName,skew = False,deblur=False,handleTableBasic=True,handleTa
         listResult, listBigBox = getTableCoordinate(mask_img)
         # resize image ?
         img = cv2.resize(img, (mask_img.shape[1], mask_img.shape[0]))
-        resultTable = GetText(listResult,listBigBox,img)
+        # resultTable = GetText(listResult,listBigBox,img)
+        resultTable = GetTextLayout(listResult,listBigBox,img,"temp.doc")
     return resultTable
+
 import datetime
 def saveResult(folder,saveFileName,result):
     file  = os.path.join(folder,saveFileName)
@@ -102,10 +107,11 @@ def preprocessFile(fileType,folder,saveFileName,skew,blur,basic,advance):
             if ".jpg" in filename:
                 resultTable = handleFile(filename,skew = skew,deblur=blur,handleTableBasic=basic,handleTableAdvance=advance)
                 # k = 0
-                for rs in resultTable:
-                    # if k %4 == 0:
-                    #     result = result + "\n"
-                    result= result + (str(rs))
+                if resultTable != None:
+                    for rs in resultTable:
+                        # if k %4 == 0:
+                        #     result = result + "\n"
+                        result= result + (str(rs))
                     # k = k+ 1
                 if fileType == "pdf":
                     os.remove(filename)
@@ -123,7 +129,7 @@ if __name__ == '__main__':
     # fileType = "pdf"## pdf, docx, jpg, txt
     # folderContainsFile = "./save/"
     # fileTextToSave = "text.txt"
-    fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance = getInput()
-    preprocessFile(fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance)
-    # preprocessFile("pdf","./test","text.txt","false","false","true","false")
+    # fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance = getInput()
+    # preprocessFile(fileType,folderContainsFile,fileTextToSave,skew,blur,basic,advance)
+    preprocessFile("pdf","./test","text.txt","false","false","true","false")
 

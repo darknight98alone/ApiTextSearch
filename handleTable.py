@@ -91,7 +91,7 @@ def getTableCoordinate(image):
                         break
                 if skip == False:
                     listBigBox.append((x,y,w,h))
-    ## sort
+    # ## sort
     for index,_ in enumerate(listResult):
         listResult[index] = sorted(listResult[index], key=lambda x: x[0])
     listResult = sorted(listResult,key=lambda x: x[0][1])
@@ -101,7 +101,7 @@ def getTableCoordinate(image):
     #         cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
     # for (x,y,w,h) in listBigBox:
     #     cv2.rectangle(newimage, (x, y), (x + w, y + h), 255, 1)
-    # printImage(newimage)
+    #     printImage(newimage)
     return listResult, listBigBox
 
 def compare_table(item1, item2):
