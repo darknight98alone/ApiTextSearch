@@ -7,6 +7,19 @@ from docx import Document
 from docx.enum.table import WD_TABLE_ALIGNMENT
 import os
 
+def checkIOUwithAboveRow(cell1,cell2):
+    (x,y,w,h) = cell1
+    (x1,y1,w1,h1) = cell2
+    if (y1<=y and y<=y1+h1-5) or (y<=y1 and y+h-5>=y1):
+        return True
+    return False
+
+def checkIOUwithAboveCell(cell1,cell2):
+    (x,y,w,h) = cell1
+    (x1,y1,w1,h1) = cell2
+    if (x<=x1 and x1<=x+w) or (x1<=x and x <= x1+w1):
+        return True
+    return False
 
 def layoutDocument(image,document):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -32,7 +45,8 @@ def layoutDocument(image,document):
             if skip == False:
                 over = False
                 for index,temp in enumerate(listResult):
-                    if abs(temp[0][1]-y) <= 5:
+                    (x1,y1,w1,h1) = temp[0]
+                    if abs(y1-y)<=5:
                         listResult[index].append((x,y,w,h))
                         over = True
                 if over == False:
@@ -41,16 +55,50 @@ def layoutDocument(image,document):
     for index,_ in enumerate(listResult):
         listResult[index] = sorted(listResult[index], key=lambda x: x[0])
     listResult = sorted(listResult,key=lambda x: x[0][1])
+    
     for temp in listResult:
+        if len(temp) == 1:
+            (x,y,w,h) = temp[0]
+            if w > image.shape[1]/3: ## kiem tra align
+                align = WD_TABLE_ALIGNMENT.LEFT
+                print("left")
+            else:
+                align = WD_TABLE_ALIGNMENT.CENTER
+        else:
+            align = WD_TABLE_ALIGNMENT.CENTER
+
         table = document.add_table(rows=1, cols=len(temp))
+        skip = False
+        pass1 = False
         for index,(x,y,w,h) in enumerate(temp):
-            # cv2.rectangle(image, (x, y), (x + w, y + h), 255, 1)
-            # printImage(image)
-            row_cells = table.rows[0].cells
-            crop = image[y:y+h,x:x+w]
-            string = pytesseract.image_to_string(crop,lang='vie')
-            p = row_cells[index].add_paragraph(string)
-            p.alignment = WD_TABLE_ALIGNMENT.CENTER
+            if skip == False:
+                row_cells = table.rows[0].cells
+                if index<len(temp)-1:
+                    if pass1 == False and checkIOUwithAboveRow(listResult[index+1][0],(x,y,w,h)):
+                        pass1 = True
+                    if pass1 == True:
+                        for val in listResult[index+1]:
+                            if checkIOUwithAboveCell((x,y,w,h),val):
+                                crop = image[y:y+h,x:x+w]
+                                string = pytesseract.image_to_string(crop,lang='vie')+"\n"
+                                cv2.rectangle(image, (x, y), (x + w, y + h), 255, 1)
+                                (x,y,w,h) = val
+                                crop = image[y:y+h,x:x+w]
+                                string = string + pytesseract.image_to_string(crop,lang='vie')
+                                cv2.rectangle(image, (x, y), (x + w, y + h), 255, 1)
+                                pass1 = False
+                                skip = True
+                                break
+                if skip == False:   
+                    crop = image[y:y+h,x:x+w]
+                    string = pytesseract.image_to_string(crop,lang='vie')
+                    cv2.rectangle(image, (x, y), (x + w, y + h), 255, 1)
+                p = row_cells[index].add_paragraph(string)
+                p.alignment = align
+                printImage(image)
+                print(string)
+            else:
+                skip = False
     return listResult,document    
 
 def GetTextLayout(listResult,listBigBox,img,docName):
@@ -63,6 +111,8 @@ def GetTextLayout(listResult,listBigBox,img,docName):
     result = []
     (height,_) = img.shape[:2]
     if len(listBigBox)==0:
+        layoutDocument(img,document)
+        document.save(docName)
         result.append(pytesseract.image_to_string(img,lang='vie')+"\n")
         return result
     bigBoxTemp = []
@@ -91,8 +141,8 @@ def GetTextLayout(listResult,listBigBox,img,docName):
             for temp in listResult:
                 if IOU(temp[0],box):
                     index = index +1
-                    table = document.add_table(rows=1, cols=len(temp))
-                    for index,(x,y,w,h) in enumerate(temp):
+                    table = document.add_table(rows=1, cols=len(listResult[0]))
+                    for i,(x,y,w,h) in enumerate(temp):
                         crop = img[y:y+h,x:x+w]
                         size = int(crop.shape[0]*1.5)
                         if size < 100:
@@ -118,7 +168,7 @@ def GetTextLayout(listResult,listBigBox,img,docName):
                         string = string + " "
                         string = string.replace("\n"," ")
                         row_cells = table.rows[0].cells
-                        p = row_cells[index].add_paragraph(string)
+                        p = row_cells[i].add_paragraph(string)
                         p.alignment = WD_TABLE_ALIGNMENT.CENTER
                         # result.append(string)
                     result.append("\n")
