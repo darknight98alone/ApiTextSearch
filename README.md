@@ -32,7 +32,7 @@
     "contents":"noi dung cua file"
 }
 ```
-
+---
 4.  API gửi lên đoạn text, trả về danh sách các tên file, nội dung của file được giới hạn 100 từ và ID đi kèm
 
 - api có dạng:localhost:8080//search
@@ -65,7 +65,7 @@
     }
 ]
 ```
-
+---
 5. API nhận ID, chỉ trả về file text
 
 - api: https://localhost:8080/getAllContents
@@ -77,7 +77,7 @@
        "mac":"1234"
    }
 ```
-
+---
 6. trước tiên phải gọi tới Api con trả về extension của file gốc
 
 - api có dạng: localhost:8080/getRootFileExtension
@@ -89,7 +89,7 @@
        "mac":"1234"
    }
 ```
-
+---
 7. API Download nhận id từ client và trả file gốc về:
 
 - api have format: localhost:8080/download
